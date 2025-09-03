@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
+"""
+filtered_logger.py
+"""
 import logging
-from typing import List
 import re
+from typing import List
 
-# Assuming filter_datum is available from a previous task
+
 def filter_datum(fields: List[str], redaction: str, message: str,
                  separator: str) -> str:
     """
@@ -12,6 +15,7 @@ def filter_datum(fields: List[str], redaction: str, message: str,
     pattern = f'({"|".join(fields)})=.*?{re.escape(separator)}'
     return re.sub(pattern, lambda m: f'{m.group(1)}={redaction}{separator}',
                   message)
+
 
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class
