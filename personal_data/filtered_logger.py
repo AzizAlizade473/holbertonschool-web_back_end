@@ -3,18 +3,12 @@
 filtered_logger.py
 """
 import logging
+import os
 import re
-from typing import List
+import mysql.connector
+from typing import List, Tuple
 
-
-def filter_datum(fields: List[str], redaction: str, message: str,
-                 separator: str) -> str:
-    """
-    Returns the log message obfuscated.
-    """
-    pattern = f'({"|".join(fields)})=.*?{re.escape(separator)}'
-    return re.sub(pattern, lambda m: f'{m.group(1)}={redaction}{separator}',
-                  message)
+PII_FIELDS: Tuple[str, ...] = ("name", "email", "phone", "ssn", "password")
 
 
 class RedactingFormatter(logging.Formatter):
@@ -36,3 +30,27 @@ class RedactingFormatter(logging.Formatter):
         record.msg = filter_datum(self.fields, self.REDACTION,
                                   record.getMessage(), self.SEPARATOR)
         return super().format(record)
+
+
+def filter_datum(fields: List[str], redaction: str, message: str,
+                 separator: str) -> str:
+    """
+    Returns the log message obfuscated.
+    """
+    pattern = f'({"|".join(fields)})=.*?{re.escape(separator)}'
+    return re.sub(pattern, lambda m: f'{m.group(1)}={redaction}{separator}',
+                  message)
+
+
+def get_logger() -> logging.Logger:
+    """
+    Creates and returns a configured logger.
+    """
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+    stream_handler = logging.StreamHandler()
+    formatter = RedactingFormatter(list(PII_FIELDS))
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+    return logger
