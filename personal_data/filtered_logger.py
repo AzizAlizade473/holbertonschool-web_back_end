@@ -8,6 +8,7 @@ import re
 import mysql.connector
 from typing import List, Tuple
 
+
 PII_FIELDS: Tuple[str, ...] = ("name", "email", "phone", "ssn", "password")
 
 
@@ -71,3 +72,24 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
         host=host,
         database=db_name
     )
+
+
+def main():
+    """
+    Main function to retrieve and log user data from the database.
+    """
+    logger = get_logger()
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM users;")
+    for row in cursor:
+        log_message = "; ".join(
+            f"{key}={value}" for key, value in row.items()
+        )
+        logger.info(log_message)
+    cursor.close()
+    db.close()
+
+
+if __name__ == "__main__":
+    main()
