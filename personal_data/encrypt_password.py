@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 """
-Encrypts a password using bcrypt.
+Validates a password against a hashed password.
 """
 import bcrypt
-from typing import Union
 
 
-def hash_password(password: str) -> bytes:
+def is_valid(password: str, hashed_password: bytes) -> bool:
     """
-    Hashes a password using a randomly generated salt.
+    Checks if a given password matches a hashed password.
     """
-    # Generate a salt and hash the password
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed_password
+    return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
