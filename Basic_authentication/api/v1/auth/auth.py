@@ -18,7 +18,6 @@ class Auth:
         if path is None or excluded_paths is None or not excluded_paths:
             return True
 
-        # Normalize the path to be slash-tolerant
         normalized_path = path if path.endswith('/') else path + '/'
         
         if normalized_path in excluded_paths:
