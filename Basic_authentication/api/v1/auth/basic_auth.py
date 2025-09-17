@@ -68,31 +68,28 @@ class BasicAuth(Auth):
         """
         Returns the User instance based on his email and password.
 
-        Args:
-            user_email (str): The email of the user to authenticate.
-            user_pwd (str): The password of the user to authenticate.
-
-        Returns:
-            User: The User instance if the credentials are valid, otherwise None.
+        - Return None if user_email is None or not a string
+        - Return None if user_pwd is None or not a string
+        - Return None if no User instance is found with this email
+        - Return None if the password is invalid
+        - Otherwise return the User instance
         """
         if user_email is None or not isinstance(user_email, str):
             return None
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
 
-        # Import 'User' locally to prevent circular import errors at startup.
         from models.user import User
-
         try:
             users = User.search({'email': user_email})
         except Exception:
             return None
 
-        if not users:
+        if not users or len(users) == 0:
             return None
 
         for user in users:
-            if user.is_valid_password(user_pwd):
+            if user and user.is_valid_password(user_pwd):
                 return user
 
         return None
