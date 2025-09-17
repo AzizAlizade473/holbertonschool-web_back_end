@@ -80,7 +80,6 @@ class BasicAuth(Auth):
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
 
-        # Local import to avoid circular dependencies at module load time.
         from models.user import User
 
         try:
@@ -88,7 +87,7 @@ class BasicAuth(Auth):
         except Exception:
             return None
 
-        if not users:
+        if not users or users == []:
             return None
 
         for user in users:
