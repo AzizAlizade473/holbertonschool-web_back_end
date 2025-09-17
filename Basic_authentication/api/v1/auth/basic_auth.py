@@ -80,7 +80,6 @@ class BasicAuth(Auth):
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
 
-        # Import 'User' locally to prevent circular import errors at startup.
         from models.user import User
 
         try:
@@ -100,21 +99,31 @@ class BasicAuth(Auth):
     def current_user(self, request=None) -> TypeVar('User'):
         """
         Retrieves the User instance for a request by using Basic Auth.
+        Catches exceptions to prevent 500 errors on failures.
         """
-        auth_header = self.authorization_header(request)
-        if auth_header is None:
-            return None
+        try:
+            auth_header = self.authorization_header(request)
+            if auth_header is None:
+                return None
 
-        base64_header = self.extract_base64_authorization_header(auth_header)
-        if base64_header is None:
-            return None
+            base64_header = self.extract_base64_authorization_header(
+                auth_header
+            )
+            if base64_header is None:
+                return None
 
-        decoded_header = self.decode_base64_authorization_header(base64_header)
-        if decoded_header is None:
-            return None
+            decoded_header = self.decode_base64_authorization_header(
+                base64_header
+            )
+            if decoded_header is None:
+                return None
 
-        user_email, user_pwd = self.extract_user_credentials(decoded_header)
-        if user_email is None or user_pwd is None:
-            return None
+            user_email, user_pwd = self.extract_user_credentials(
+                decoded_header
+            )
+            if user_email is None or user_pwd is None:
+                return None
 
-        return self.user_object_from_credentials(user_email, user_pwd)
+            return self.user_object_from_credentials(user_email, user_pwd)
+        except Exception:
+            return None
