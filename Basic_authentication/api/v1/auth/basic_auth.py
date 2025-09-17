@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
-Basic Authentication module
+Basic Authentication module.
 """
 import base64
 from api.v1.auth.auth import Auth
 from typing import Tuple, TypeVar
-from models.user import User
 
 
 class BasicAuth(Auth):
@@ -100,6 +99,8 @@ class BasicAuth(Auth):
         Returns:
             The User object if found and password is valid, otherwise None.
         """
+        from models.user import User
+
         if user_email is None or not isinstance(user_email, str):
             return None
         if user_pwd is None or not isinstance(user_pwd, str):
@@ -113,7 +114,6 @@ class BasicAuth(Auth):
         if not users:
             return None
 
-        # Assuming email is unique, check the first user found
         user = users[0]
         if user.is_valid_password(user_pwd):
             return user
