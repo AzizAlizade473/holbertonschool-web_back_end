@@ -26,7 +26,7 @@ class BasicAuth(Auth):
             return None
         if not authorization_header.startswith("Basic "):
             return None
-        return authorization_header[6:]
+        return authorization_header.split(' ')[1]
 
     def decode_base64_authorization_header(
             self,
@@ -80,6 +80,7 @@ class BasicAuth(Auth):
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
 
+        # Import 'User' locally to prevent circular import errors at startup.
         from models.user import User
 
         try:
@@ -87,7 +88,7 @@ class BasicAuth(Auth):
         except Exception:
             return None
 
-        if not users or users == []:
+        if not users:
             return None
 
         for user in users:
