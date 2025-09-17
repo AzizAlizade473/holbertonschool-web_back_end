@@ -3,7 +3,6 @@
 Basic Authentication module
 """
 from api.v1.auth.auth import Auth
-from models.user import User
 from typing import TypeVar
 import base64
 
@@ -27,7 +26,7 @@ class BasicAuth(Auth):
             return None
         if not authorization_header.startswith("Basic "):
             return None
-        return authorization_header.split(' ')[1]
+        return authorization_header[6:]
 
     def decode_base64_authorization_header(
             self,
@@ -76,6 +75,7 @@ class BasicAuth(Auth):
         Returns:
             User: The User instance if the credentials are valid, otherwise None.
         """
+        from models.user import User
         if user_email is None or not isinstance(user_email, str):
             return None
         if user_pwd is None or not isinstance(user_pwd, str):
@@ -89,7 +89,6 @@ class BasicAuth(Auth):
         if not users:
             return None
 
-        # Assuming email is unique, so we take the first result
         for user in users:
             if user.is_valid_password(user_pwd):
                 return user
