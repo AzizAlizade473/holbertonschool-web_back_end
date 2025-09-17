@@ -79,7 +79,11 @@ class BasicAuth(Auth):
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
 
-        from models.user import User
+        try:
+            from models.user import User
+        except Exception:
+            return None
+
         try:
             users = User.search({'email': user_email})
         except Exception:
