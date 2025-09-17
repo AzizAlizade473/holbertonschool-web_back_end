@@ -6,15 +6,14 @@ from os import getenv
 from flask import Flask, jsonify, abort, request
 from flask_cors import CORS
 
-# Import Auth class
+# Import the app_views blueprint
+from api.v1.views import app_views
 from api.v1.auth.auth import Auth
-# Assuming the above import path is correct based on the provided file structure
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
-# Create Auth instance based on environment variable
 auth = None
 AUTH_TYPE = getenv("AUTH_TYPE", None)
 if AUTH_TYPE == "auth":
