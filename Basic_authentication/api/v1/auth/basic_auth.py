@@ -90,9 +90,8 @@ class BasicAuth(Auth):
             return None
 
         # Assuming email is unique, so we take the first result
-        user = users[0]
-
-        if user.is_valid_password(user_pwd):
-            return user
+        for user in users:
+            if user.is_valid_password(user_pwd):
+                return user
 
         return None
