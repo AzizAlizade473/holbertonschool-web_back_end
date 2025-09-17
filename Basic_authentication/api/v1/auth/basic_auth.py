@@ -75,11 +75,12 @@ class BasicAuth(Auth):
         Returns:
             User: The User instance if the credentials are valid, otherwise None.
         """
-        from models.user import User
         if user_email is None or not isinstance(user_email, str):
             return None
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
+
+        from models.user import User
 
         try:
             users = User.search({'email': user_email})
