@@ -67,8 +67,8 @@ class BasicAuth(Auth):
         Extracts user email and password from the decoded header string.
 
         Args:
-            decoded_base64_authorization_header (str): The decoded credential
-                                                        string ("<email>:<password>").
+            decoded_base64_authorization_header (str): The decoded
+                credential string ("<email>:<password>").
 
         Returns:
             Tuple[str, str]: A tuple of (email, password), or (None, None)
