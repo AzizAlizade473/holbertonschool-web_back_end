@@ -10,7 +10,7 @@ class Auth:
     """
     Manages API authentication.
     """
-
+    
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
         Determines if a path requires authentication.
@@ -29,7 +29,9 @@ class Auth:
         """
         Gets the authorization header from the request.
         """
-        return None
+        if request is None or 'Authorization' not in request.headers:
+            return None
+        return request.headers.get('Authorization')
 
     def current_user(self, request=None) -> TypeVar('User'):
         """
