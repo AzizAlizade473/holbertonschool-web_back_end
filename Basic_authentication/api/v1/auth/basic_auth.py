@@ -11,7 +11,8 @@ import base64
 class BasicAuth(Auth):
     """BasicAuth class for handling Basic authentication"""
     
-    def extract_base64_authorization_header(self, authorization_header: str) -> str:
+    def extract_base64_authorization_header(self,
+                                           authorization_header: str) -> str:
         """
         Extract the Base64 part of the Authorization header
         
@@ -29,7 +30,9 @@ class BasicAuth(Auth):
             return None
         return authorization_header[6:]
     
-    def decode_base64_authorization_header(self, base64_authorization_header: str) -> str:
+    def decode_base64_authorization_header(self,
+                                         base64_authorization_header: str
+                                         ) -> str:
         """
         Decode a Base64 string
         
@@ -49,12 +52,15 @@ class BasicAuth(Auth):
         except Exception:
             return None
     
-    def extract_user_credentials(self, decoded_base64_authorization_header: str) -> (str, str):
+    def extract_user_credentials(self,
+                                decoded_base64_authorization_header: str
+                                ) -> (str, str):
         """
         Extract user email and password from the Base64 decoded value
         
         Args:
-            decoded_base64_authorization_header: The decoded authorization string
+            decoded_base64_authorization_header: The decoded authorization
+                                                   string
             
         Returns:
             Tuple of (email, password) or (None, None)
@@ -70,7 +76,9 @@ class BasicAuth(Auth):
         email, password = decoded_base64_authorization_header.split(':', 1)
         return email, password
     
-    def user_object_from_credentials(self, user_email: str, user_pwd: str) -> TypeVar('User'):
+    def user_object_from_credentials(self,
+                                    user_email: str,
+                                    user_pwd: str) -> TypeVar('User'):
         """
         Return the User instance based on email and password
         
