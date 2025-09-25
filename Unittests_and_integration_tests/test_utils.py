@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-A module for parameterizing a unit test, mocking HTTP calls, and testing memoization.
+A module for testing the utils module.
 """
 import unittest
 from parameterized import parameterized
@@ -78,18 +78,13 @@ class TestMemoize(unittest.TestCase):
                 """A property that calls a_method and is memoized."""
                 return self.a_method()
 
-        with patch.object(TestClass, 'a_method', return_value=42) as mock_a_method:
+        with patch.object(TestClass, 'a_method',
+                         return_value=42) as mock_a_method:
             test_instance = TestClass()
-            
-            # Call the memoized property twice
             result1 = test_instance.a_property
             result2 = test_instance.a_property
-
-            # Assert that the results are correct
             self.assertEqual(result1, 42)
             self.assertEqual(result2, 42)
-
-            # Assert that a_method was called only once
             mock_a_method.assert_called_once()
 
 
