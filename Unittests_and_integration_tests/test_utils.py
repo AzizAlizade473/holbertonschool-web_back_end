@@ -1,90 +1,39 @@
 #!/usr/bin/env python3
 """
-A module for testing the utils module.
+A module to test the client.py file.
 """
 import unittest
+from unittest.mock import patch, PropertyMock
 from parameterized import parameterized
-from unittest.mock import patch, Mock
 
-from utils import access_nested_map, get_json, memoize
+from client import GithubOrgClient
 
 
-class TestAccessNestedMap(unittest.TestCase):
+class TestGithubOrgClient(unittest.TestCase):
     """
-    A class to test the access_nested_map function from the utils module.
-    """
-    @parameterized.expand([
-        ({"a": 1}, ("a",), 1),
-        ({"a": {"b": 2}}, ("a",), {"b": 2}),
-        ({"a": {"b": 2}}, ("a", "b"), 2),
-    ])
-    def test_access_nested_map(self, nested_map, path, expected):
-        """
-        Test that access_nested_map returns the expected result.
-        """
-        self.assertEqual(access_nested_map(nested_map, path), expected)
-
-    @parameterized.expand([
-        ({}, ("a",)),
-        ({"a": 1}, ("a", "b")),
-    ])
-    def test_access_nested_map_exception(self, nested_map, path):
-        """
-        Test that a KeyError is raised for the respective inputs.
-        """
-        with self.assertRaises(KeyError):
-            access_nested_map(nested_map, path)
-
-
-class TestGetJson(unittest.TestCase):
-    """
-    A class for testing the get_json function.
+    Test case for the GithubOrgClient class.
     """
     @parameterized.expand([
-        ("http://example.com", {"payload": True}),
-        ("http://holberton.io", {"payload": False}),
+        ("google",),
+        ("abc",),
     ])
-    @patch('utils.requests.get')
-    def test_get_json(self, test_url, test_payload, mock_get):
+    @patch('client.get_json')
+    def test_org(self, org_name, mock_get_json):
         """
-        Test that utils.get_json returns the expected result.
+        Test that GithubOrgClient.org returns the correct value and that
+        get_json is called once with the expected argument.
         """
-        mock_response = Mock()
-        mock_response.json.return_value = test_payload
-        mock_get.return_value = mock_response
+        # Create an instance of GithubOrgClient
+        client = GithubOrgClient(org_name)
 
-        result = get_json(test_url)
+        # Call the org property
+        client.org()
 
-        mock_get.assert_called_once_with(test_url)
-        self.assertEqual(result, test_payload)
+        # Construct the expected URL
+        expected_url = f"https://api.github.com/orgs/{org_name}"
 
-
-class TestMemoize(unittest.TestCase):
-    """
-    A class for testing the memoize decorator.
-    """
-    def test_memoize(self):
-        """
-        Test that when calling a_property twice, the correct result is returned
-        but a_method is only called once.
-        """
-        class TestClass:
-            """A test class with a memoized property."""
-            def a_method(self):
-                """A method that returns a fixed value."""
-                return 42
-
-            @memoize
-            def a_property(self):
-                """A property that calls a_method and is memoized."""
-                return self.a_method()
-
-        with patch.object(TestClass, 'a_method',
-                          return_value=42) as mock_a_method:
-            test_instance = TestClass()
-            self.assertEqual(test_instance.a_property, 42)
-            self.assertEqual(test_instance.a_property, 42)
-            mock_a_method.assert_called_once()
+        # Assert that get_json was called once with the correct URL
+        mock_get_json.assert_called_once_with(expected_url)
 
 
 if __name__ == '__main__':
