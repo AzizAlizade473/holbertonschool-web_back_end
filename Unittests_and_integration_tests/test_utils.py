@@ -4,8 +4,9 @@ A module for testing the utils module.
 """
 import unittest
 from parameterized import parameterized
-from utils import access_nested_map, get_json, memoize
 from unittest.mock import patch, Mock
+
+from utils import access_nested_map, get_json, memoize
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -81,10 +82,8 @@ class TestMemoize(unittest.TestCase):
         with patch.object(TestClass, 'a_method',
                          return_value=42) as mock_a_method:
             test_instance = TestClass()
-            result1 = test_instance.a_property
-            result2 = test_instance.a_property
-            self.assertEqual(result1, 42)
-            self.assertEqual(result2, 42)
+            self.assertEqual(test_instance.a_property, 42)
+            self.assertEqual(test_instance.a_property, 42)
             mock_a_method.assert_called_once()
 
 
