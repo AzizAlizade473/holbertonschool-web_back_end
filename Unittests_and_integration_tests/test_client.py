@@ -20,20 +20,19 @@ class TestGithubOrgClient(unittest.TestCase):
     @patch('client.get_json')
     def test_org(self, org_name, mock_get_json):
         """
-        Test that GithubOrgClient.org returns the correct value and that
-        get_json is called once with the expected argument.
+        Test that GithubOrgClient.org property returns the correct value.
         """
-        # Define a mock payload for get_json to return
-        test_payload = {"login": org_name, "some_key": "some_value"}
+        # Define a test payload that the mock will return
+        test_payload = {"login": org_name, "id": 12345}
         mock_get_json.return_value = test_payload
 
-        # Create an instance of GithubOrgClient
+        # Create an instance of the client
         client = GithubOrgClient(org_name)
 
-        # Call the method under test and assert its return value
-        self.assertEqual(client.org(), test_payload)
+        # Access the 'org' property and assert its value
+        self.assertEqual(client.org, test_payload)
 
-        # Construct the expected URL
+        # Define the expected URL that should have been called
         expected_url = f"https://api.github.com/orgs/{org_name}"
 
         # Assert that the mocked get_json was called once with the correct URL
