@@ -1,40 +1,44 @@
 #!/usr/bin/env python3
-"""
-A module to test the client.py file.
-"""
+"""Unit tests for utils module"""
+
 import unittest
-from unittest.mock import patch, PropertyMock
-from parameterized import parameterized
-
-from client import GithubOrgClient
+from unittest.mock import patch, Mock
+from utils import memoize
 
 
-class TestGithubOrgClient(unittest.TestCase):
-    """
-    Test case for the GithubOrgClient class.
-    """
-    @parameterized.expand([
-        ("google",),
-        ("abc",),
-    ])
-    @patch('client.get_json')
-    def test_org(self, org_name, mock_get_json):
-        """
-        Test that GithubOrgClient.org returns the correct value and that
-        get_json is called once with the expected argument.
-        """
-        # Create an instance of GithubOrgClient
-        client = GithubOrgClient(org_name)
+class TestMemoize(unittest.TestCase):
+    """Test class for memoize decorator"""
 
-        # Call the org property
-        client.org()
+    def test_memoize(self):
+        """Test that memoize decorator works correctly"""
+        
+        class TestClass:
+            """Test class to demonstrate memoize"""
+            
+            def a_method(self):
+                """A method that returns 42"""
+                return 42
+            
+            @memoize
+            def a_property(self):
+                """A memoized property that calls a_method"""
+                return self.a_method()
+        
+        # Create instance and patch a_method
+        with patch.object(TestClass, 'a_method', return_value=42) as mock_method:
+            test_instance = TestClass()
+            
+            # Call a_property twice
+            result1 = test_instance.a_property
+            result2 = test_instance.a_property
+            
+            # Assert both calls return the same result
+            self.assertEqual(result1, 42)
+            self.assertEqual(result2, 42)
+            
+            # Assert a_method was only called once (memoization works)
+            mock_method.assert_called_once()
 
-        # Construct the expected URL
-        expected_url = f"https://api.github.com/orgs/{org_name}"
 
-        # Assert that get_json was called once with the correct URL
-        mock_get_json.assert_called_once_with(expected_url)
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
