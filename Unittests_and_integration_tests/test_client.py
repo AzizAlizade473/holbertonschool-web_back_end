@@ -48,7 +48,7 @@ class TestGithubOrgClient(unittest.TestCase):
     @patch('client.get_json')
     def test_public_repos(self, mock_get_json):
         """
-        Test the public_repos method of GithubOrgClient.
+        Test the public_repos property of GithubOrgClient.
         It should return the list of repository names based on the payload
         from the mocked get_json and _public_repos_url.
         """
@@ -68,9 +68,9 @@ class TestGithubOrgClient(unittest.TestCase):
             repos_url = "https://api.github.com/orgs/test/repos"
             mock_public_repos_url.return_value = repos_url
 
-            # Create an instance and call the method under test
+            # Create an instance and access the property under test
             client = GithubOrgClient("test")
-            repos = client.public_repos()
+            repos = client.public_repos  # Access as a property
 
             # Assert that the list of repos is what we expect
             expected_repos = ["repo-one", "repo-two", "repo-three"]
