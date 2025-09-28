@@ -1,9 +1,7 @@
-# ... (standard header lines)
-
-#: templates/3-index.html:6
+#: templates/4-index.html:6
 msgid "home_title"
 msgstr "Welcome to Holberton"
 
-#: templates/3-index.html:10
+#: templates/4-index.html:10
 msgid "home_header"
 msgstr "Hello world!"
