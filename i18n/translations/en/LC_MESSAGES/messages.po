@@ -1,3 +1,5 @@
+# ... (standard header lines)
+
 #: templates/3-index.html:6
 msgid "home_title"
 msgstr "Welcome to Holberton"
