@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Uses the translated message ID 'home_title' -->
+    <title>{{ _('home_title') }}</title>
+</head>
+<body>
+    <!-- Uses the translated message ID 'home_header' -->
+    <h1>{{ _('home_header') }}</h1>
+
+    <!-- Display welcome message based on login status and uses translation -->
+    <p>
+    {% if g.user %}
+        <!-- If user is logged in, use the 'logged_in_as' message and pass the username variable -->
+        {{ _('logged_in_as', username=g.user.name) }}
+    {% else %}
+        <!-- If no user is logged in, use the 'not_logged_in' message -->
+        {{ _('not_logged_in') }}
+    {% endif %}
+    </p>
+
+</body>
+</html>
