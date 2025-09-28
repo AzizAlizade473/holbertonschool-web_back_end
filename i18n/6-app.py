@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """
 Flask application with Babel configuration and locale priority:
-URL > User Settings > Request Header > Default.
+1. Locale from URL parameters
+2. Locale from user settings
+3. Locale from request header
+4. Default locale
 """
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
 
 
-# Mock database user table
+# Mock database user table (from Task 5)
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
     2: {"name": "Beyonce", "locale": "en", "timezone": "US/Central"},
@@ -59,9 +62,9 @@ def get_locale():
     """
     Determines the best match for supported languages based on the priority:
     1. Locale from URL parameters
-    2. Locale from user settings
+    2. Locale from user settings (if user is logged in and locale is supported)
     3. Locale from request header
-    4. Default locale
+    4. Default locale (handled by Babel fallback)
     """
     # 1. Locale from URL parameters
     url_locale = request.args.get('locale')
@@ -69,14 +72,13 @@ def get_locale():
         return url_locale
 
     # 2. Locale from user settings
+    # Check if user is logged in, has a locale set, and if that locale is supported
     if g.user and g.user.get('locale') and \
        g.user.get('locale') in app.config['LANGUAGES']:
         return g.user.get('locale')
 
     # 3. Locale from request header
     return request.accept_languages.best_match(app.config['LANGUAGES'])
-
-    # 4. Default locale (handled automatically by Babel if 1, 2, 3 fail)
 
 
 @app.route('/')
